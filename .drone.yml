@@ -1,0 +1,57 @@
+--- 
+clone: 
+  depth: 1
+kind: pipeline
+name: ARM
+steps: 
+  - 
+    commands: 
+      - chmod x+ .github/arm
+      - bash .github/arm
+    environment: 
+      GITHUB_TOKEN:
+        from_secret: GH_TOKEN
+      AUTHOR:
+        from_secret: MARKER
+      REPONAME:
+        from_secret: REPONAME
+      NAMEPKG:
+        from_secret: TOOCHAIN_NAME
+      TOKEN:
+        from_secret: TOKEN_BOT
+      ID:
+        from_secret: CHAT_ID
+    image: vcyzteen/cloud:builder
+    name: builder
+    trigger: 
+      branch: 
+        - unified-tes
+
+--- 
+clone: 
+  depth: 1
+kind: pipeline
+name: ARM64
+steps: 
+  - 
+    commands: 
+      - chmod x+ .github/arm64
+      - bash .github/arm64
+    environment: 
+      GITHUB_TOKEN:
+        from_secret: GH_TOKEN
+      AUTHOR:
+        from_secret: MARKER
+      REPONAME:
+        from_secret: REPONAME
+      NAMEPKG:
+        from_secret: TOOCHAIN_NAME
+      TOKEN:
+        from_secret: TOKEN_BOT
+      ID:
+        from_secret: CHAT_ID
+    image: vcyzteen/cloud:builder
+    name: builder
+    trigger: 
+      branch: 
+        - unified-tes

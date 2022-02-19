@@ -1,0 +1,34 @@
+- Variable
+Before running the building you have to research these variables in drone.io first
+    
+  • GH_TOKEN - Fill with github token
+  • MARKER - Fill with your github username
+  • REPONAME - Fill with your new template repo for gcc
+  • TOOCHAIN_NAME - Fill with according to what you want
+  • TOKEN_BOT - Fill with your telegram bot token
+
+To push gcc into the github repo, just create one repo here because I have modified these scripts with 1 repo and different branches. like 64/32 this will be made in one repo but different branch
+
+- Usage
+Running this script is quite simple. We start by forking:
+
+  • Fork this repo
+  • Open your https://cloud.drone.io
+  • Sync and connect the repo from fork
+  • Goto settings repo and set variabel
+  • Run new build for build automatic
+
+As of now, I only support arm, arm64 and x86 (compiles for x86_64 only). This list is subject to change as I receive requests.
+
+Keep in mind that this script contains just the bare minimum prerequisites.
+
+- Credits
+  • Vaisakh for base this scripts.
+  • OS Dev Wiki for knowledge base.
+  • USBHost's Amazing GCC Build script for certain prerequisite dependencies.
+
+- Looking for precompiled toolchains?
+My GCC Cross Compiler builds are automated build faster. They are pushed to:
+
+  • https://github.com/vcyzteen/gcc-arm64.git [ ARM64 ] stable branch
+  • https://github.com/vcyzteen/gcc-arm.git [ ARM32 ] stable branch
