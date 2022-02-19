@@ -6,7 +6,7 @@ name: ARM
 steps: 
   - 
     commands: 
-      - chmod x+ .github/arm
+      - chmod +x .github/arm
       - bash .github/arm
     environment: 
       GITHUB_TOKEN:
@@ -35,7 +35,7 @@ name: ARM64
 steps: 
   - 
     commands: 
-      - chmod x+ .github/arm64
+      - chmod +x .github/arm64
       - bash .github/arm64
     environment: 
       GITHUB_TOKEN:
