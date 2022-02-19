@@ -4,9 +4,15 @@
 
 # run all
 run() {
+   tg_post_msg "<code>cloning gcc & binutils</code>"
    download_resources
-   build_binutils |& tee binutils.log
-   build_gcc |& tee gcc.log
+   tg_post_msg "<code>cloning has been succesfull</code>"
+   tg_post_msg "<code>building binutils...</code>"
+   build_binutils
+   tg_post_build "binutils.log" "*build binutils has been succesfull...*"
+   tg_post_msg "<code>building gcc.../code>"
+   build_gcc
+   tg_post_build "gcc.log" "*build gcc has been succesfull...*"
 }
 
 # telegram api
@@ -48,23 +54,15 @@ export WORK_DIR="$PWD"
 export PREFIX="$PWD/../gcc-${arch}"
 export PATH="$PREFIX/bin:$PATH"
 
-tg_post_msg "||                                                                    ||"
 tg_post_msg "|| Building Toolchain for ${arch} with ${TARGET} as target ||"
-tg_post_msg "||                                                                    ||"
 
 download_resources() {
-  tg_post_msg "<code>cloning gcc & binutils</code>"
-  echo "Cloning binutils"
   git clone --depth=1 git://sourceware.org/git/binutils-gdb.git -b master binutils --depth=1
-  echo "Cloning GCC"
   git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b master gcc --depth=1
   cd ${WORK_DIR}
-  echo "Downloaded prerequisites!"
-  tg_post_msg "<code>cloning has been succesfull</code>"
 }
 
 build_binutils() {
-  tg_post_msg "<code>building binutils...</code>"
   cd ${WORK_DIR}
   mkdir build-binutils
   cd build-binutils
@@ -83,13 +81,11 @@ build_binutils() {
     --with-linker-hash-style=gnu
 
   make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" -j$(($(nproc --all) + 2))
-  make install -j$(($(nproc --all) + 2))
+  make install -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
   cd ../
-  tg_post_build "binutils.log" "<code>build binutils has been succesfull...</code>"
 }
 
 build_gcc() {
-  tg_post_msg "<code>building gcc.../code>"
   cd ${WORK_DIR}
   cd gcc
   ./contrib/download_prerequisites
@@ -121,8 +117,7 @@ build_gcc() {
     --with-sysroot
 
   make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc -j$(($(nproc --all) + 2))
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc -j$(($(nproc --all) + 2))
-  tg_post_build "gcc.log" "<code>build gcc has been succesfull...</code>"
+  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
 }
 
 run
