@@ -6,6 +6,7 @@ name: ARM
 steps: 
   - 
     commands: 
+      - chmod +x gccwrap.sh
       - chmod +x .github/arm
       - bash .github/arm
     environment: 
@@ -35,6 +36,7 @@ name: ARM64
 steps: 
   - 
     commands: 
+      - chmod +x gccwrap.sh
       - chmod +x .github/arm64
       - bash .github/arm64
     environment: 
