@@ -30,5 +30,4 @@ Keep in mind that this script contains just the bare minimum prerequisites.
 - Looking for precompiled toolchains?
 My GCC Cross Compiler builds are automated build faster. They are pushed to:
 
-  • https://github.com/vcyzteen/gcc-arm64.git [ ARM64 ] stable branch
-  • https://github.com/vcyzteen/gcc-arm.git [ ARM32 ] stable branch
+  • https://github.com/vcyzteen/sample-cross.git [ ARM64 ] [ ARM32 ]
