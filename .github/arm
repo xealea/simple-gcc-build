@@ -9,4 +9,4 @@ git add . -f
 git commit -as -m "Build Arm Gcc $NAMEPKG" -m "Build completed on: $(/bin/date)" -m "Configuration: $(/bin/cat /tmp/gcc-arm-version)"
 git gc
 git checkout -b 32
-git push https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git
+git push https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git -f
