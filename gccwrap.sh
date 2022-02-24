@@ -4,15 +4,10 @@
 
 # run all
 run() {
-   tg_post_msg "<code>cloning gcc & binutils</code>"
    download_resources
-   tg_post_msg "<code>cloning has been succesfull</code>"
-   tg_post_msg "<code>building binutils...</code>"
    build_binutils
-   tg_post_build "binutils.log" "*build binutils has been succesfull...*"
-   tg_post_msg "<code>building gcc.../code>"
    build_gcc
-   tg_post_build "gcc.log" "*build gcc has been succesfull...*"
+   notif
 }
 
 # telegram api
@@ -80,7 +75,7 @@ build_binutils() {
     --with-pkgversion="$NAMEPKG" \
     --with-linker-hash-style=gnu
 
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" -j$(($(nproc --all) + 2))
+  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
   make install -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
   cd ../
 }
@@ -116,8 +111,12 @@ build_gcc() {
     --enable-linker-build-id \
     --with-sysroot
 
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc -j$(($(nproc --all) + 2))
+  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc -j$(($(nproc --all) + 2)) 2>&1 | tee gcc.log
   make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc -j$(($(nproc --all) + 2)) 2>&1 | tee gcc.log
+}
+
+notif() {
+  tg_post_build "binutils.log" "gcc.log" "*here for the log*" "*gcc has been uploaded on $(/bin/date)*"
 }
 
 run
