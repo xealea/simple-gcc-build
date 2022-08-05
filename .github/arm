@@ -2,9 +2,11 @@
 git clone https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git ../gcc-arm
 rm -rf ../gcc-arm/*
 ./gccwrap.sh -a arm
+./build-lld.sh -a arm
 script_dir=$(pwd)
 cd ../gcc-arm
-./bin/arm-linux-gnueabi-gcc -v 2>&1 |& tee /tmp/gcc-arm-version
+bash "$script_dir/strip-binaries.sh"
+./bin/arm-eabi-gcc -v 2>&1 |& tee /tmp/gcc-arm-version
 git add . -f
 git commit -as -m "Build Arm Gcc $NAMEPKG" -m "Build completed on: $(/bin/date)" -m "Configuration: $(/bin/cat /tmp/gcc-arm-version)"
 git gc
