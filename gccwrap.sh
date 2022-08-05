@@ -53,7 +53,7 @@ tg_post_msg "|| Building Toolchain for ${arch} with ${TARGET} as target ||"
 
 download_resources() {
   git clone --depth=1 git://sourceware.org/git/binutils-gdb.git -b master binutils --depth=1
-  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b master gcc --depth=1
+  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b releases/gcc-4.9 gcc --depth=1
   cd ${WORK_DIR}
 }
 
@@ -75,8 +75,8 @@ build_binutils() {
     --with-pkgversion="$NAMEPKG" \
     --with-linker-hash-style=gnu
 
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
-  make install -j$(($(nproc --all) + 2)) 2>&1 | tee binutils.log
+  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" 2>&1 | tee binutils.log
+  make -kj"$(nproc --all)" install 2>&1 | tee binutils.log
   cd ../
 }
 
@@ -106,13 +106,13 @@ build_gcc() {
     --enable-threads=posix \
     --enable-__cxa_atexit \
     --enable-clocale=gnu \
-    --enable-languages=all \
+    --enable-languages=c,c++ \
     --disable-multilib \
     --enable-linker-build-id \
     --with-sysroot
 
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc -j$(($(nproc --all) + 2)) 2>&1 | tee gcc.log
-  make CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc -j$(($(nproc --all) + 2)) 2>&1 | tee gcc.log
+  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc 2>&1 | tee gcc.log
+  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc 2>&1 | tee gcc.log
 }
 
 notif() {
