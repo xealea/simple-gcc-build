@@ -8,6 +8,7 @@ steps:
     commands: 
       - chmod +x gccwrap.sh
       - chmod +x .github/arm
+      - chmod +x build-lld.sh
       - bash .github/arm
     environment: 
       GITHUB_TOKEN:
@@ -38,6 +39,7 @@ steps:
     commands: 
       - chmod +x gccwrap.sh
       - chmod +x .github/arm64
+      - chmod +x build-lld.sh
       - bash .github/arm64
     environment: 
       GITHUB_TOKEN:
