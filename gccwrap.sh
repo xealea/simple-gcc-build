@@ -46,8 +46,8 @@ case "${arch}" in
 esac
 
 export WORK_DIR="$PWD"
-export PREFIX="$PWD/../gcc-${arch}"
-export PATH="$PREFIX/bin:$PATH"
+export PREFIX="$WORK_DIR/../gcc-${arch}"
+export PATH="$PREFIX/bin:/usr/bin/core_perl:$PATH"
 
 tg_post_msg "|| Building Toolchain for ${arch} with ${TARGET} as target ||"
 
@@ -59,60 +59,65 @@ download_resources() {
 
 build_binutils() {
   cd ${WORK_DIR}
+  echo "Building Binutils"
   mkdir build-binutils
   cd build-binutils
   ../binutils/configure --target=$TARGET \
+    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     --prefix="$PREFIX" \
     --with-sysroot \
     --disable-nls \
     --disable-docs \
     --disable-werror \
     --disable-gdb \
-    --disable-gold \
-    --with-newlib \
-    --with-gnu-as \
-    --with-gnu-ld \
-    --with-pkgversion="$NAMEPKG" \
-    --with-linker-hash-style=gnu
-
-  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" 2>&1 | tee binutils.log
-  make -kj"$(nproc --all)" install 2>&1 | tee binutils.log
+    --enable-gold \
+    --with-pkgversion="$NAMEPKG"
+  make -j$(($(nproc --all) + 2))
+  make install -j$(($(nproc --all) + 2))
   cd ../
+  echo "Built Binutils, proceeding to next step...."
 }
 
 build_gcc() {
   cd ${WORK_DIR}
+  echo "Building GCC"
   cd gcc
   ./contrib/download_prerequisites
+  echo "Bleeding Edge" > gcc/DEV-PHASE
   cd ../
   mkdir build-gcc
   cd build-gcc
   ../gcc/configure --target=$TARGET \
+    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     --prefix="$PREFIX" \
     --disable-decimal-float \
+    --disable-gcov \
     --disable-libffi \
     --disable-libgomp \
     --disable-libmudflap \
     --disable-libquadmath \
     --disable-libstdcxx-pch \
     --disable-nls \
+    --disable-shared \
     --disable-docs \
-    --disable-werror \
+    --enable-default-ssp \
+    --enable-languages=c,c++ \
+    --enable-threads=posix \
     --with-pkgversion="$NAMEPKG" \
     --with-newlib \
     --with-gnu-as \
     --with-gnu-ld \
-    --enable-shared \
-    --enable-threads=posix \
-    --enable-__cxa_atexit \
-    --enable-clocale=gnu \
-    --enable-languages=c,c++ \
-    --disable-multilib \
-    --enable-linker-build-id \
-    --with-sysroot
+    --with-linker-hash-style=gnu \
+    --with-sysroot \
+    --with-headers="/usr/include"
 
-  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" all-gcc 2>&1 | tee gcc.log
-  make -kj"$(nproc --all)" CFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" CXXFLAGS="-flto -O3 -pipe -ffunction-sections -fdata-sections" install-gcc 2>&1 | tee gcc.log
+  make all-gcc -j$(($(nproc --all) + 2))
+  make all-target-libgcc -j$(($(nproc --all) + 2))
+  make install-gcc -j$(($(nproc --all) + 2))
+  make install-target-libgcc -j$(($(nproc --all) + 2))
+  echo "Built GCC!"
 }
 
 notif() {
