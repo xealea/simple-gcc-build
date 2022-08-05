@@ -6,6 +6,7 @@ name: ARM
 steps: 
   - 
     commands: 
+      - apt-get -y install ninja
       - chmod +x gccwrap.sh
       - chmod +x .github/arm
       - chmod +x build-lld.sh
@@ -37,6 +38,7 @@ name: ARM64
 steps: 
   - 
     commands: 
+      - apt-get -y install ninja
       - chmod +x gccwrap.sh
       - chmod +x .github/arm64
       - chmod +x build-lld.sh
