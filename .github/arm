@@ -1,8 +1,8 @@
 #!bin/bash/env bash
 git clone https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git ../gcc-arm
 rm -rf ../gcc-arm/*
-./gccwrap.sh -a arm
-./build-lld.sh -a arm
+bash gccwrap.sh -a arm
+bash build-lld.sh -a arm
 script_dir=$(pwd)
 cd ../gcc-arm
 bash "$script_dir/strip-binaries.sh"
