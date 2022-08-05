@@ -1,5 +1,5 @@
 #!bin/bash/env bash
-git clone https://github.com/$AUTHOR/$REPONAME.git ../gcc-arm64
+git clone https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git ../gcc-arm64
 rm -rf ../gcc-arm64/*
 ./gccwrap.sh -a arm64
 script_dir=$(pwd)
