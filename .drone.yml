@@ -22,7 +22,7 @@ steps:
         from_secret: TOKEN_BOT
       ID:
         from_secret: CHAT_ID
-    image: vcyzteen/cloud:builder
+    image: vcyzteen/xea:x
     name: builder
     trigger: 
       event:
@@ -56,7 +56,7 @@ steps:
         from_secret: TOKEN_BOT
       ID:
         from_secret: CHAT_ID
-    image: vcyzteen/cloud:builder
+    image: vcyzteen/xea:x
     name: builder
     trigger: 
       event:
