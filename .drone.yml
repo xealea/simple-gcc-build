@@ -24,7 +24,7 @@ steps:
         from_secret: TOKEN_BOT
       ID:
         from_secret: CHAT_ID
-    image: xealea/xea:xo1
+    image: xealea/xea:01
     name: builder
     trigger: 
       branch: 
