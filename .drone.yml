@@ -8,9 +8,9 @@ steps:
     commands: 
       - apt-get -y install ninja-build
       - chmod +x gccwrap.sh
-      - chmod +x .github/arm
+      - chmod +x .github/x86
       - chmod +x build-lld.sh
-      - bash .github/arm
+      - bash .github/x86
     environment: 
       GITHUB_TOKEN:
         from_secret: GH_TOKEN
@@ -24,39 +24,7 @@ steps:
         from_secret: TOKEN_BOT
       ID:
         from_secret: CHAT_ID
-    image: vcyzteen/xea:x
-    name: builder
-    trigger: 
-      branch: 
-        - unified-tes
-
---- 
-clone: 
-  depth: 1
-kind: pipeline
-name: ARM64
-steps: 
-  - 
-    commands: 
-      - apt-get -y install ninja-build
-      - chmod +x gccwrap.sh
-      - chmod +x .github/arm64
-      - chmod +x build-lld.sh
-      - bash .github/arm64
-    environment: 
-      GITHUB_TOKEN:
-        from_secret: GH_TOKEN
-      AUTHOR:
-        from_secret: MARKER
-      REPONAME:
-        from_secret: REPONAME
-      NAMEPKG:
-        from_secret: TOOCHAIN_NAME
-      TOKEN:
-        from_secret: TOKEN_BOT
-      ID:
-        from_secret: CHAT_ID
-    image: vcyzteen/xea:x
+    image: xealea/xea:xo1
     name: builder
     trigger: 
       branch: 
