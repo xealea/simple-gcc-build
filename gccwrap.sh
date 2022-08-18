@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0
-# Author: vcyzteen
+# Author: xealea
 
 # run all
 run() {
@@ -54,7 +54,7 @@ tg_post_msg "|| Building Toolchain for ${arch} with ${TARGET} as target ||"
 
 download_resources() {
   git clone --depth=1 git://sourceware.org/git/binutils-gdb.git -b master binutils --depth=1
-  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b releases/gcc-4.9 gcc --depth=1
+  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b master --depth=1
   cd ${WORK_DIR}
 }
 
@@ -68,10 +68,6 @@ build_binutils() {
     CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     --prefix="$PREFIX" \
     --with-sysroot \
-    --disable-nls \
-    --disable-docs \
-    --disable-werror \
-    --disable-gdb \
     --enable-gold \
     --with-pkgversion="$NAMEPKG"
   make -j$(($(nproc --all) + 2))
@@ -93,16 +89,6 @@ build_gcc() {
     CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     --prefix="$PREFIX" \
-    --disable-decimal-float \
-    --disable-gcov \
-    --disable-libffi \
-    --disable-libgomp \
-    --disable-libmudflap \
-    --disable-libquadmath \
-    --disable-libstdcxx-pch \
-    --disable-nls \
-    --disable-shared \
-    --disable-docs \
     --enable-default-ssp \
     --enable-languages=c,c++ \
     --enable-threads=posix \
