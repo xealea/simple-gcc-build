@@ -40,10 +40,7 @@ done
 
 # TODO: Better target handling
 case "${arch}" in
-  "arm") TARGET="arm-eabi" ;;
-  "arm64") TARGET="aarch64-elf" ;;
-  "arm64gnu") TARGET="aarch64-linux-gnu" ;;
-  "x86") TARGET="x86_64-elf" ;;
+  "x86") TARGET="x86_64-pc-linux-gnu" ;;
 esac
 
 export WORK_DIR="$PWD"
@@ -66,13 +63,29 @@ build_binutils() {
   ../binutils/configure --target=$TARGET \
     CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
-    --prefix="$PREFIX" \
-    --with-sysroot \
-    --enable-gold \
-    --with-pkgversion="$NAMEPKG"
+        --prefix="$PREFIX" \
+        --with-lib-path="$PREFIX"/lib \
+        --enable-deterministic-archives \
+        --enable-gold \
+        --enable-ld=default \
+        --enable-lto \
+        --enable-plugins \
+        --enable-relro \
+        --enable-targets=x86_64-pep \
+        --enable-threads \
+        --disable-gdb \
+        --disable-werror \
+        --with-pic \
+        --with-system-zlib \
+        --disable-shared \
+        --enable-static \
+        --with-pkgversion='xea-xo1-gcc'
+
   make -j$(($(nproc --all) + 2))
   make install -j$(($(nproc --all) + 2))
   cd ../
+  # Remove unwanted files
+  rm -f "$PREFIX"/share/man/man1/{dlltool,nlmconv,windres,windmc}*
   echo "Built Binutils, proceeding to next step...."
 }
 
@@ -81,30 +94,57 @@ build_gcc() {
   echo "Building GCC"
   cd gcc
   ./contrib/download_prerequisites
-  echo "Bleeding Edge" > gcc/DEV-PHASE
+  echo "Baremetal" > gcc/DEV-PHASE
   cd ../
   mkdir build-gcc
   cd build-gcc
   ../gcc/configure --target=$TARGET \
     CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
     CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
-    --prefix="$PREFIX" \
-    --enable-default-ssp \
-    --enable-languages=c,c++ \
-    --enable-threads=posix \
-    --with-pkgversion="$NAMEPKG" \
-    --with-newlib \
-    --with-gnu-as \
-    --with-gnu-ld \
-    --with-linker-hash-style=gnu \
-    --with-sysroot \
-    --with-headers="/usr/include"
+        --prefix="$PREFIX" \
+        --with-pkgversion='xea-xo1-gcc' \
+        --libdir="$PREFIX"/lib \
+        --libexecdir="$PREFIX"/lib \
+        --with-lib-path="$PREFIX"/lib \
+        --enable-languages=c,c++,lto,fotran,ada \
+        --with-gcc-major-version-only \
+        --with-isl="$PREFIX" \
+        --with-gmp="$PREFIX" \
+        --with-mpfr="$PREFIX" \
+        --with-mpc="$PREFIX" \
+        --with-linker-hash-style=both \
+        --with-system-zlib \
+        --enable-__cxa_atexit \
+        --enable-cet=auto \
+        --enable-checking=release \
+        --enable-clocale=gnu \
+        --enable-default-pie \
+        --enable-default-ssp \
+        --enable-gnu-indirect-function \
+        --enable-gnu-unique-object \
+        --enable-linker-build-id \
+        --enable-lto \
+        --enable-multilib \
+        --enable-plugin \
+        --enable-shared \
+        --enable-threads=posix \
+        --disable-libssp \
+        --disable-libstdcxx-pch \
+        --disable-werror \
+        --without-cuda-driver \
+        --enable-link-serialization=1 \
+        --enable-bootstrap \
+        --with-build-config=bootstrap-lto
 
   make all-gcc -j$(($(nproc --all) + 2))
   make all-target-libgcc -j$(($(nproc --all) + 2))
   make install-gcc -j$(($(nproc --all) + 2))
   make install-target-libgcc -j$(($(nproc --all) + 2))
   echo "Built GCC!"
+
+  # create lto plugin link
+  mkdir -p "$PREFIX"/lib/bfd-plugins
+  ln -sf "$PREFIX"/libexec/gcc/x86_64-pc-linux-gnu/12.1.1/liblto_plugin.so "$PREFIX"/lib/bfd-plugins/liblto_plugin.so
 }
 
 notif() {
