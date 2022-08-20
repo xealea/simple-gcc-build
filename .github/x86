@@ -2,13 +2,11 @@
 git clone https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git ../gcc-x86
 rm -rf ../gcc-x86/*
 bash gccwrap.sh -a x86
-bash build-lld.sh -a x86
 script_dir=$(pwd)
 cd ../gcc-x86
-bash "$script_dir/strip-binaries.sh"
-./bin/x86_64-elf-gcc -v 2>&1 |& tee /tmp/gcc-x86-version
+./bin/x86_64-pc-linux-gnu-gcc -v 2>&1 |& tee /tmp/gcc-x86-version
 git add . -f
-git commit -as -m "Build x86_64 GCC $NAMEPKG" -m "Build completed on: $(/bin/date)" -m "Configuration: $(/bin/cat /tmp/gcc-x86-version)"
+git commit -as -m "Build x86_64 GCC xea-xo1-gcc" -m "Build completed on: $(/bin/date)" -m "Configuration: $(/bin/cat /tmp/gcc-x86-version)"
 git gc
 git checkout -b x86_64
 git push https://$GITHUB_TOKEN@github.com/$AUTHOR/$REPONAME.git -f
