@@ -9,7 +9,6 @@ steps:
       - apt-get -y install binutils ninja-build build-essential make 
       - chmod +x gccwrap.sh
       - chmod +x .github/x86
-      - chmod +x build-lld.sh
       - bash .github/x86
     environment: 
       GITHUB_TOKEN:
@@ -18,8 +17,6 @@ steps:
         from_secret: MARKER
       REPONAME:
         from_secret: REPONAME
-      NAMEPKG:
-        from_secret: TOOCHAIN_NAME
       TOKEN:
         from_secret: TOKEN_BOT
       ID:
