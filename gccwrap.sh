@@ -40,7 +40,8 @@ done
 
 # TODO: Better target handling
 case "${arch}" in
-  "x86") TARGET="x86_64-pc-linux-gnu" ;;
+  "arm64") TARGET="aarch64-linux-gnu" ;;
+    "arm") TARGET="arm-linux-gnueabi" ;;
 esac
 
 export WORK_DIR="$PWD"
@@ -50,8 +51,8 @@ export PATH="$PREFIX/bin:/usr/bin/core_perl:$PATH"
 tg_post_msg "|| Building Toolchain for ${arch} with ${TARGET} as target ||"
 
 download_resources() {
-  git clone --depth=1 git://sourceware.org/git/binutils-gdb.git -b master binutils --depth=1
-  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b master --depth=1
+  git clone --depth=1 git://sourceware.org/git/binutils-gdb.git -b binutils-2_39-branch binutils --depth=1
+  git clone --depth=1 git://gcc.gnu.org/git/gcc.git -b releases/gcc-12 --depth=1
   cd ${WORK_DIR}
 }
 
@@ -61,8 +62,8 @@ build_binutils() {
   mkdir build-binutils
   cd build-binutils
   ../binutils/configure --target=$TARGET \
-    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
-    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CFLAGS="-02" \
+    CXXFLAGS="-02" \
         --prefix="$PREFIX" \
         --with-lib-path="$PREFIX"/lib \
         --enable-deterministic-archives \
@@ -71,15 +72,13 @@ build_binutils() {
         --enable-lto \
         --enable-plugins \
         --enable-relro \
-        --enable-targets=x86_64-pep \
+        --enable-targets=$TARGET-pep \
         --enable-threads \
         --disable-gdb \
         --disable-werror \
         --with-pic \
         --with-system-zlib \
-        --disable-shared \
-        --enable-static \
-        --with-pkgversion='xea-xo1-gcc'
+        --with-pkgversion='xea-xo1-binutils'
 
   make -j$(($(nproc --all) + 2))
   make install -j$(($(nproc --all) + 2))
@@ -99,14 +98,14 @@ build_gcc() {
   mkdir build-gcc
   cd build-gcc
   ../gcc/configure --target=$TARGET \
-    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
-    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CFLAGS="-02" \
+    CXXFLAGS="-02" \
         --prefix="$PREFIX" \
         --with-pkgversion='xea-xo1-gcc' \
         --libdir="$PREFIX"/lib \
         --libexecdir="$PREFIX"/lib \
         --with-lib-path="$PREFIX"/lib \
-        --enable-languages=c,c++,lto,fotran,ada \
+        --enable-languages=c,c++,lto \
         --with-gcc-major-version-only \
         --with-isl="$PREFIX" \
         --with-gmp="$PREFIX" \
@@ -130,11 +129,7 @@ build_gcc() {
         --enable-threads=posix \
         --disable-libssp \
         --disable-libstdcxx-pch \
-        --disable-werror \
-        --without-cuda-driver \
-        --enable-link-serialization=1 \
-        --enable-bootstrap \
-        --with-build-config=bootstrap-lto
+        --disable-werror
 
   make all-gcc -j$(($(nproc --all) + 2))
   make all-target-libgcc -j$(($(nproc --all) + 2))
@@ -144,7 +139,7 @@ build_gcc() {
 
   # create lto plugin link
   mkdir -p "$PREFIX"/lib/bfd-plugins
-  ln -sf "$PREFIX"/libexec/gcc/x86_64-pc-linux-gnu/12.1.1/liblto_plugin.so "$PREFIX"/lib/bfd-plugins/liblto_plugin.so
+  ln -sf "$PREFIX"/libexec/gcc/$TARGET-linux-gnu/12.2.0/liblto_plugin.so "$PREFIX"/lib/bfd-plugins/liblto_plugin.so
 }
 
 notif() {
