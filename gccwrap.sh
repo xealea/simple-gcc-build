@@ -107,10 +107,6 @@ build_gcc() {
         --with-lib-path="$PREFIX"/lib \
         --enable-languages=c,c++,lto \
         --with-gcc-major-version-only \
-        --with-isl="$PREFIX" \
-        --with-gmp="$PREFIX" \
-        --with-mpfr="$PREFIX" \
-        --with-mpc="$PREFIX" \
         --with-linker-hash-style=both \
         --with-system-zlib \
         --enable-__cxa_atexit \
@@ -139,7 +135,7 @@ build_gcc() {
 
   # create lto plugin link
   mkdir -p "$PREFIX"/lib/bfd-plugins
-  ln -sf "$PREFIX"/libexec/gcc/$TARGET-linux-gnu/12.2.0/liblto_plugin.so "$PREFIX"/lib/bfd-plugins/liblto_plugin.so
+  ln -sf "$PREFIX"/libexec/gcc/$TARGET/12.2.0/liblto_plugin.so "$PREFIX"/lib/bfd-plugins/liblto_plugin.so
 }
 
 notif() {
