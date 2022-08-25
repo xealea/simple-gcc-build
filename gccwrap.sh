@@ -62,8 +62,8 @@ build_binutils() {
   mkdir build-binutils
   cd build-binutils
   ../binutils/configure --target=$TARGET \
-    CFLAGS="-02" \
-    CXXFLAGS="-02" \
+    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
         --prefix="$PREFIX" \
         --with-lib-path="$PREFIX"/lib \
         --enable-deterministic-archives \
@@ -98,8 +98,8 @@ build_gcc() {
   mkdir build-gcc
   cd build-gcc
   ../gcc/configure --target=$TARGET \
-    CFLAGS="-02" \
-    CXXFLAGS="-02" \
+    CFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
+    CXXFLAGS="-flto -flto-compression-level=10 -O3 -pipe -ffunction-sections -fdata-sections" \
         --prefix="$PREFIX" \
         --with-pkgversion='xea-xo1-gcc' \
         --libdir="$PREFIX"/lib \
