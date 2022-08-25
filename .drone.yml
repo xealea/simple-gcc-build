@@ -2,7 +2,7 @@
 clone: 
   depth: 1
 kind: pipeline
-name: ARM
+name: ARM64
 steps: 
   - 
     commands: 
