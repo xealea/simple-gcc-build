@@ -6,7 +6,7 @@ name: ARM64
 steps: 
   - 
     commands: 
-      - apt-get -y install binutils ninja-build build-essential make 
+      - apt-get -y install binutils ninja-build build-essential make libc6-dev 
       - chmod +x gccwrap.sh
       - chmod +x .github/arm64
       - bash .github/arm64
@@ -34,7 +34,7 @@ name: ARM
 steps: 
   - 
     commands: 
-      - apt-get -y install binutils ninja-build build-essential make 
+      - apt-get -y install binutils ninja-build build-essential make libc6-dev 
       - chmod +x gccwrap.sh
       - chmod +x .github/arm
       - bash .github/arm
