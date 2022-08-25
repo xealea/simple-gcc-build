@@ -8,8 +8,36 @@ steps:
     commands: 
       - apt-get -y install binutils ninja-build build-essential make 
       - chmod +x gccwrap.sh
-      - chmod +x .github/x86
-      - bash .github/x86
+      - chmod +x .github/arm64
+      - bash .github/arm64
+    environment: 
+      GITHUB_TOKEN:
+        from_secret: GH_TOKEN
+      AUTHOR:
+        from_secret: MARKER
+      REPONAME:
+        from_secret: REPONAME
+      TOKEN:
+        from_secret: TOKEN_BOT
+      ID:
+        from_secret: CHAT_ID
+    image: xealea/xea:01
+    name: builder
+    trigger: 
+      branch: 
+        - unified-tes
+--- 
+clone: 
+  depth: 1
+kind: pipeline
+name: ARM
+steps: 
+  - 
+    commands: 
+      - apt-get -y install binutils ninja-build build-essential make 
+      - chmod +x gccwrap.sh
+      - chmod +x .github/arm
+      - bash .github/arm
     environment: 
       GITHUB_TOKEN:
         from_secret: GH_TOKEN
