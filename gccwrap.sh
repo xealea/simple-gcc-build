@@ -29,7 +29,7 @@ download_resources() {
   git clone git://sourceware.org/git/binutils-gdb.git -b binutils-2_39-branch binutils --depth=1
   echo "Cloned binutils!"
   echo "Cloning GCC"
-  git clone git://gcc.gnu.org/git/gcc.git -b releases/gcc-12 gcc --depth=1
+  git clone git://gcc.gnu.org/git/gcc.git -b releases/gcc-4.9 gcc --depth=1
   cd ${WORK_DIR}
   echo "Downloaded prerequisites!"
 }
@@ -53,7 +53,7 @@ build_binutils() {
     --enable-threads \
     --with-system-zlib \
     --prefix="$PREFIX" \
-    --with-pkgversion="Xo4 Binutils" \
+    --with-pkgversion="Xo5-4.9 Binutils" \
     --with-sysroot
   make -j$(($(nproc --all) + 2))
   make install -j$(($(nproc --all) + 2))
@@ -106,7 +106,7 @@ build_gcc() {
     --enable-plugin \
     --enable-shared \
     --disable-libssp \
-    --with-pkgversion="Xo4 GCC" \
+    --with-pkgversion="Xo5-4.9 GCC" \
     --with-sysroot
 
   make all-gcc -j$(($(nproc --all) + 2))
